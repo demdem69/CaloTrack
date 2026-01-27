@@ -10,6 +10,11 @@ import json
 import re
 from streamlit_cookies_controller import CookieController
 
+# --- 1. CONFIGURATION & DESIGN ---
+st.set_page_config(page_title="CaloTrack Pro Cloud", page_icon="🍏", layout="wide")
+controller = CookieController()
+conn = st.connection("postgresql", type="sql")
+
 # --- 2. FONCTIONS DE BASE ---
 def hash_pw(pw): return hashlib.sha256(pw.encode()).hexdigest()
 
