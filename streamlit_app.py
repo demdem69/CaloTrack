@@ -36,9 +36,9 @@ def init_db():
         # 2. Vérification si la table foods est vide
         check = s.execute(text("SELECT COUNT(*) FROM foods")).fetchone()
         
-        if check[0] == 0:
+        
             # Liste des 100 ingrédients à injecter
-            aliments = [
+        aliments = [
                 # Protéines
                 ('Poulet (Blanc)', 165), ('Poulet (Cuisse)', 210), ('Dinde (Filet)', 110),
                 ('Bœuf (Steak 5%)', 125), ('Bœuf (Steak 15%)', 215), ('Porc (Filet)', 145),
@@ -83,10 +83,10 @@ def init_db():
             ]
             # Boucle 
     
-            for nom, cal in aliments:
-                s.execute(text("INSERT INTO foods (name, cal_100g) VALUES (:n, :c) ON CONFLICT (name) DO NOTHING"), {"n": n, "c": c})
+        for nom, cal in aliments:
+            s.execute(text("INSERT INTO foods (name, cal_100g) VALUES (:n, :c) ON CONFLICT (name) DO NOTHING"), {"n": n, "c": c})
         
-            s.commit()
+        s.commit()
 
 def analyze_meal_ia(image, info=""):
     try:
