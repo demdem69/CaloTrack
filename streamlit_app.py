@@ -125,6 +125,7 @@ with tabs[0]:
             if 'ia_res' in st.session_state:
                 st.session_state.ia_res['plat'] = st.text_input("Plat", st.session_state.ia_res['plat'])
                 df_ia = pd.DataFrame(st.session_state.ia_res['composition'])
+                st.info("💡 Tu peux modifier les noms, les poids ou les kcal/100g directement dans le tableau ci-dessous avant de valider.")
                 edited_ia = st.data_editor(df_ia, num_rows="dynamic", use_container_width=True)
                 # Calcul dynamique
                 final_label = st.session_state.ia_res['plat']
@@ -138,13 +139,23 @@ with tabs[0]:
             with cols[i]:
                 pct = st.slider(f"{u} (%)", 0, 100, 100//len(users), key=f"s{u}")
                 shares[u] = (final_cal * pct / 100)
-        
+    
         if st.button("🚀 Enregistrer"):
-            for u, c in shares.items():
-                run_query('INSERT INTO meal_logs (date, label, "user", calories, group_id) VALUES (:d,:l,:u,:c,:g)', 
-                          {"d": date.today(), "l": final_label, "u": u, "c": c, "g": gid})
-            st.success("Validé !"); del st.session_state.ia_res if 'ia_res' in st.session_state else None
-
+            if final_cal > 0:
+                for u, c in shares.items():
+                    run_query('INSERT INTO meal_logs (date, label, "user", calories, group_id) VALUES (:d,:l,:u,:c,:g)', 
+                              {"d": date.today(), "l": final_label, "u": u, "c": c, "g": gid})
+                
+                st.success("Validé !")
+                
+                # Suppression sécurisée des données temporaires de l'IA
+                if 'ia_res' in st.session_state:
+                    del st.session_state['ia_res']
+                
+                st.rerun()
+            else:
+                st.error("Le total des calories doit être supérieur à 0.")
+                
 # --- ONGLET GESTION & PARAMÈTRES (MODIF/SUPPR) ---
 with tabs[3]: # Gestion des logs
     st.subheader("Logs des repas")
