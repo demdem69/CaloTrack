@@ -83,7 +83,7 @@ def init_db():
             ]
             # Boucle 
     
-        for nom, cal in aliments:
+        for n, c in aliments:
             s.execute(text("INSERT INTO foods (name, cal_100g) VALUES (:n, :c) ON CONFLICT (name) DO NOTHING"), {"n": n, "c": c})
         
         s.commit()
