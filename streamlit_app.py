@@ -10,40 +10,6 @@ import json
 import re
 from streamlit_cookies_controller import CookieController
 
-# --- DESIGN PERSONNALISÉ ---
-st.markdown("""
-    <style>
-    /* Couleur principale des boutons */
-    .stButton>button {
-        background-color: #2ecc71;
-        color: white;
-        border-radius: 10px;
-        border: none;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .stButton>button:hover {
-        background-color: #27ae60;
-        border: none;
-        color: white;
-    }
-    /* Style des onglets */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        background-color: #f0f2f6;
-        border-radius: 5px 5px 0px 0px;
-        padding: 10px;
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: #2ecc71 !important;
-        color: white !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-
 
 # --- 1. CONFIGURATION & SERVICES ---
 controller = CookieController()
