@@ -9,7 +9,7 @@ from PIL import Image
 import json
 import re
 from streamlit_cookies_controller import CookieController
-
+"""
 # --- 1. CONFIGURATION & DESIGN ---
 st.set_page_config(page_title="CaloTrack Pro Cloud", page_icon="🍏", layout="wide")
 controller = CookieController()
@@ -22,7 +22,7 @@ st.markdown("""
     .stTabs [aria-selected="true"] { background-color: #2ecc71 !important; color: white !important; }
     </style>
     """, unsafe_allow_html=True)
-
+"""
 # --- 2. FONCTIONS DE BASE ---
 def hash_pw(pw): return hashlib.sha256(pw.encode()).hexdigest()
 
