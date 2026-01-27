@@ -23,10 +23,53 @@ def init_db():
         s.execute(text('CREATE TABLE IF NOT EXISTS meal_logs (id SERIAL PRIMARY KEY, date DATE, label TEXT, "user" TEXT, calories REAL, group_id TEXT)'))
         s.execute(text('CREATE TABLE IF NOT EXISTS daily_spend (date DATE, "user" TEXT, depense REAL, group_id TEXT, PRIMARY KEY (date, "user", group_id))'))
         
+        # Injection de la liste complète des 100 aliments
         check_foods = s.execute(text("SELECT COUNT(*) FROM foods")).fetchone()
         if check_foods[0] == 0:
-            aliments_init = [('Poulet (Blanc)', 165), ('Riz cuit', 130), ('Pâtes cuites', 150), ('Œuf (unité)', 155), ('Avocat', 160), ('Pomme', 52)]
-            for name, cal in aliments_init:
+            aliments_100 = [
+                # Protéines
+                ('Poulet (Blanc)', 165), ('Poulet (Cuisse)', 210), ('Dinde (Filet)', 110),
+                ('Bœuf (Steak 5%)', 125), ('Bœuf (Steak 15%)', 215), ('Porc (Filet)', 145),
+                ('Jambon blanc', 110), ('Œuf (unité)', 155), ('Saumon', 208),
+                ('Thon au naturel', 116), ('Cabillaud', 82), ('Crevettes', 99),
+                ('Colin', 75), ('Sardines (huile)', 208), ('Tofu', 76),
+                # Féculents (Cuit)
+                ('Riz blanc cuit', 130), ('Riz complet cuit', 110), ('Pâtes cuites', 150),
+                ('Quinoa cuit', 120), ('Semoule cuite', 112), ('Boulghour cuit', 83),
+                ('Pomme de terre vapeur', 77), ('Patate douce', 86), ('Pain Baguette', 250),
+                ('Pain Complet', 247), ('Pain de mie', 280), ('Biscotte', 400),
+                ('Flocons d\'avoine', 370), ('Maïs', 96), ('Lentilles cuites', 116),
+                ('Pois chiches cuits', 164), ('Haricots rouges cuits', 127),
+                # Légumes
+                ('Haricots verts', 31), ('Brocoli', 34), ('Carotte', 41),
+                ('Courgette', 17), ('Épinards', 23), ('Chou-fleur', 25),
+                ('Aubergine', 25), ('Poivron', 30), ('Tomate', 18),
+                ('Concombre', 15), ('Salade verte', 15), ('Champignons', 22),
+                ('Oignon', 40), ('Petit pois', 81), ('Asperges', 20), ('Poireau', 61),
+                # Fruits
+                ('Pomme', 52), ('Banane', 89), ('Poire', 57), ('Orange', 47),
+                ('Clémentine', 47), ('Fraise', 33), ('Framboise', 52),
+                ('Myrtilles', 57), ('Raisin', 67), ('Kiwi', 61),
+                ('Pêche', 39), ('Ananas', 50), ('Avocat', 160),
+                ('Melon', 34), ('Pastèque', 30), ('Abricot', 48),
+                # Produits Laitiers
+                ('Lait demi-écrémé', 46), ('Lait entier', 60), ('Yaourt nature', 63),
+                ('Fromage blanc 0%', 48), ('Fromage blanc 3%', 75), ('Emmental', 380),
+                ('Camembert', 265), ('Mozzarella', 280), ('Feta', 264),
+                ('Parmesan', 431), ('Beurre', 717), ('Crème fraîche 30%', 290),
+                # Matières Grasses & Snacks
+                ('Huile d\'olive', 884), ('Huile de tournesol', 884), ('Mayonnaise', 680),
+                ('Ketchup', 110), ('Moutarde', 66), ('Noix', 654),
+                ('Amandes', 579), ('Beurre de cacahuète', 588),
+                ('Chocolat Noir 70%', 546), ('Chocolat au lait', 535), ('Biscuit sablé', 450),
+                ('Croissant', 400), ('Pain au chocolat', 400), ('Pizza Margherita', 260),
+                ('Burger (classique)', 295), ('Frites', 312), ('Chips', 536),
+                ('Glace vanille', 207), ('Miel', 304), ('Sucre', 387),
+                # Boissons
+                ('Café noir', 1), ('Thé', 1), ('Jus d\'orange', 45), ('Soda (Cola)', 42),
+                ('Vin rouge', 85), ('Bière', 43), ('Eau', 0)
+            ]
+            for name, cal in aliments_100:
                 s.execute(text("INSERT INTO foods (name, cal_100g) VALUES (:n, :c) ON CONFLICT DO NOTHING"), {"n": name, "c": cal})
         s.commit()
 
