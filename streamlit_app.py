@@ -80,9 +80,10 @@ def init_db():
                 ('Café noir', 1), ('Thé', 1), ('Jus d\'orange', 45), ('Soda (Cola)', 42),
                 ('Vin rouge', 85), ('Bière', 43), ('Eau', 0)
             ]
-            # Boucle d'insertion
+            # Boucle 
+    
             for nom, cal in aliments:
-                s.execute(text("INSERT INTO foods (name, cal_100g) VALUES (:n, :c) ON CONFLICT (name) DO NOTHING"), {"n": nom, "c": cal})
+                s.execute(text("INSERT INTO foods (name, cal_100g) VALUES (:n, :c) ON CONFLICT (name) DO NOTHING"), {"n": n, "c": c})
         
         s.commit()
 
