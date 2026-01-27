@@ -192,7 +192,8 @@ with tabs[1]:
     st.header(f"Bilan du {date.today().strftime('%d/%m')}")
     for u in users:
         c = run_query('SELECT SUM(calories) FROM meal_logs WHERE "user"=:u AND date=:d AND group_id=:g', {"u":u,"d":date.today(),"g":gid}, fetch=True)[0][0] or 0
-        st.metric(f"Consommation {u}", f"{c:.0f} kcal")    g_id = st.text_input("Foyer")
+        st.metric(f"Consommation {u}", f"{c:.0f} kcal")    
+        g_id = st.text_input("Foyer")
     pw = st.text_input("Mot de passe", type="password")
     rem = st.checkbox("Rester connecté")
     if st.button("Valider"):
