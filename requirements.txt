@@ -3,5 +3,6 @@ pandas
 plotly
 sqlalchemy
 psycopg2-binary
-pillow
 google-generativeai
+Pillow
+streamlit-cookies-controller
