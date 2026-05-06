@@ -1,13 +1,15 @@
 # CaloTrack
 An open source tool for monitoring your calorie deficit
 
-## Déploiement GitHub Pages (Vite)
+## Architecture
 
-Ce dépôt contient aussi un petit site statique Vite dans `web/`, déployable via GitHub Pages.
+- `web/`: frontend Vite (déployable sur GitHub Pages)
+- `api/`: backend FastAPI (à héberger ailleurs) qui se connecte à PostgreSQL (Aiven)
 
 ### Pré-requis
 
-- Node.js 20+
+- Node.js 20+ (frontend)
+- Python 3.11+ (backend)
 
 ### Lancer en local
 
@@ -15,6 +17,17 @@ Ce dépôt contient aussi un petit site statique Vite dans `web/`, déployable v
 cd web
 npm install
 npm run dev
+```
+
+Backend (dans un autre terminal):
+
+```bash
+cd api
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn api.main:app --reload --port 8000
 ```
 
 ### Déploiement sur GitHub Pages
@@ -27,4 +40,4 @@ npm run dev
 Le site sera disponible à l’URL:
 - `https://<ton-user>.github.io/<nom-du-repo>/`
 
-> Note: l’application principale (`streamlit_app.py`) nécessite Python + PostgreSQL et ne peut pas être hébergée sur GitHub Pages (statique uniquement).
+> Note: GitHub Pages est statique. Le backend `api/` doit être déployé sur une plateforme qui exécute Python et expose HTTPS.
