@@ -2,61 +2,64 @@
 
 ### 1) Préparer Aiven PostgreSQL
 
-Dans Aiven, récupère les infos de connexion (Overview / Connection information):
+Dans Aiven, crée une base PostgreSQL et récupère les informations de connexion :
 
-- **DB name**: `defaultdb`
-- **Port**: `14530`
-- **Host**
-- **User**
-- **Password**
-- **SSL**: requis (on utilise `sslmode=require`)
+- **DB_HOST** : nom de l’hôte Aiven
+- **DB_PORT** : `14530`
+- **DB_NAME** : `defaultdb`
+- **DB_USER** : utilisateur Aiven
+- **DB_PASSWORD** : mot de passe Aiven
+- **DB_SSLMODE** : `require`
+
+Le projet contient déjà `api/.env.example` avec ces variables.
 
 ### 2) Déployer l’API sur Render
 
-Option A (recommandé): via `render.yaml`
+Le fichier `render.yaml` définit le service Render pour l’API.
 
-- Sur Render: **New → Blueprint**
+- Sur Render : **New → Blueprint**
 - Sélectionne le repo GitHub `CaloTrack`
-- Render va détecter `render.yaml` et créer le service `calotrack-api`
+- Render détecte `render.yaml` et crée le service `calotrack-api`
 
-Renseigne ensuite les variables d’environnement (dans le service Render):
+Dans Render, configure ensuite ces variables d’environnement :
 
-- `DB_HOST` = host Aiven
-- `DB_USER` = user Aiven
-- `DB_PASSWORD` = password Aiven
-- `CORS_ORIGINS` = `https://demdem69.github.io` (et éventuellement `http://localhost:5173` séparé par virgule)
+- `DB_HOST` = hôte Aiven
+- `DB_USER` = utilisateur Aiven
+- `DB_PASSWORD` = mot de passe Aiven
+- `CORS_ORIGINS` = `https://<ton-user>.github.io` (ou ton domaine custom)
 
-Les variables déjà fixées:
+Les variables préconfigurées dans `render.yaml` sont :
 
 - `DB_PORT=14530`
 - `DB_NAME=defaultdb`
 - `DB_SSLMODE=require`
 
-Teste l’API:
+### 3) Configurer GitHub Pages pour le frontend
 
-- Ouvre `/health` sur l’URL Render de l’API (doit répondre `{"status":"ok"}`)
+Le front se compile avec `VITE_API_BASE_URL`.
 
-### 3) Connecter le Front (GitHub Pages) à l’API
+Sur GitHub : **Settings → Secrets and variables → Actions → Variables → New repository variable**
 
-Le front lit `VITE_API_BASE_URL` au **build**.
+- Name : `VITE_API_BASE_URL`
+- Value : `https://<ton-service>.onrender.com`
 
-Sur GitHub: **Settings → Secrets and variables → Actions → Variables → New repository variable**
+Le workflow `.github/workflows/deploy-pages.yml` utilise cette variable pendant le build.
 
-- Name: `VITE_API_BASE_URL`
-- Value: `https://<ton-service>.onrender.com`
+### 4) Vérifier CORS
 
-Ensuite, push sur `main` (ou relance le workflow Pages). Le build injectera cette URL.
+Sur Render, `CORS_ORIGINS` doit contenir le domaine de ton site GitHub Pages :
 
-### 4) Déployer le Front sur GitHub Pages
+- `https://<ton-user>.github.io`
 
-- GitHub: **Settings → Pages**
-- Source: **GitHub Actions**
-- Attends le workflow `Deploy web to GitHub Pages`
+et si nécessaire :
 
-### 5) Test end-to-end
+- `http://localhost:5173` pour le développement local.
 
+### 5) Tester l’intégration
+
+- Déploie le backend sur Render
+- Déploie le frontend sur GitHub Pages
 - Ouvre le site Pages
-- Crée un foyer (Register)
-- Connecte-toi (Login)
-- Ajoute un membre (la section "Paramètres (demo API)" doit lister/ajouter)
+- Vérifie que l’API `/health` répond bien
+- Teste l’authentification et l’ajout des utilisateurs
 

@@ -1,5 +1,6 @@
 import hashlib
 import os
+import logging
 from datetime import date
 from typing import Any
 
@@ -16,6 +17,7 @@ from .schema import SCHEMA_SQL
 load_dotenv()
 
 app = FastAPI(title="CaloTrack API", version="0.1.0")
+log = logging.getLogger("calotrack")
 
 cors_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 if cors_origins:
@@ -34,15 +36,29 @@ def hash_pw(pw: str) -> str:
 
 @app.on_event("startup")
 def _startup() -> None:
-    with connect() as conn:
-        with conn.cursor() as cur:
-            cur.execute(SCHEMA_SQL)
-        conn.commit()
+    # IMPORTANT: ne pas faire échouer tout le service si la DB est temporairement
+    # inaccessible (DNS, firewall, maintenance). Les endpoints DB renverront 503.
+    try:
+        with connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(SCHEMA_SQL)
+            conn.commit()
+        log.info("Database connection OK; schema ensured.")
+    except Exception as e:  # pragma: no cover
+        log.exception("Database not reachable at startup: %s", e)
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    try:
+        with connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                cur.fetchone()
+        return {"status": "ok", "db": "ok"}
+    except Exception:
+        # Le service HTTP est up, mais la DB ne l'est pas (ou DNS/ACL).
+        return {"status": "degraded", "db": "down"}
 
 
 class AuthBody(BaseModel):
